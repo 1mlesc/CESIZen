@@ -1,6 +1,6 @@
 "use server"
 
-import { registerUser } from "@/controllers/authController";
+import { registerUser, verifyUser } from "@/controllers/authController";
 import { redirect } from "next/navigation";
 
 export async function signupAction(formData: any) {
@@ -11,5 +11,16 @@ export async function signupAction(formData: any) {
     redirect('/auth/login?registered=true');
   } else {
     return { error: result.message, statusCode: result.statusCode };
+  }
+}
+
+export async function loginAction(formData) {
+  const result = await verifyUser(formData);
+
+  if (result.success) {
+    // TODO: session utilisateur
+    redirect("/"); // Redirection vers l'accueil ou le tableau de bord
+  } else {
+    return { error: result.error };
   }
 }

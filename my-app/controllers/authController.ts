@@ -1,6 +1,6 @@
 import { UserModel } from "@/models/User";
 import bcrypt from "bcryptjs";
-import { signupSchema } from "@/schemas/auth/signupSchema";
+import { signupSchema, loginSchema } from "@/schemas/auth/signupSchema";
 
 /**
  * 
@@ -33,3 +33,42 @@ export const registerUser = async (data: any) => {
   }
   return { success: true, message: "Utilisateur créé avec succès.", statusCode: 201, };
 }
+
+/**
+ * 
+ * @param data Données de connexion qui sera vérifiée par le schéma
+ * @returns 
+ */
+export const verifyUser = async (data) => {
+  try {
+    // 1. Validation des données d'entrée via Zod
+    const validation = loginSchema.safeParse(data);
+    if (!validation.success) {
+      return { success: false, error: validation.error.message };
+    }
+
+    const { email, password } = validation.data;
+
+    // 2. Récupérer l'utilisateur via le Model
+    const user = await UserModel.findByEmail(email);
+
+    if (!user) {
+      return { success: false, error: "Email ou mot de passe incorrect." };
+    }
+
+    // 3. Vérifier le mot de passe (Hash vs Clair)
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return { success: false, error: "Email ou mot de passe incorrect." };
+    }
+
+    // 4. Succès (On renvoie l'utilisateur sans le mot de passe)
+    const { password: _, ...userWithoutPassword } = user;
+    return { success: true, user: userWithoutPassword };
+
+  } catch (error) {
+    console.error("Erreur login controller:", error);
+    return { success: false, error: "Erreur serveur." };
+  }
+};

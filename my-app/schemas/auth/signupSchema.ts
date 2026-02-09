@@ -28,3 +28,14 @@ export const signupSchema = z.object({
   message: "Les mots de passe ne correspondent pas",
   path: ["confirm_password"],
 });
+
+export const loginSchema = z.object({
+  email: z
+    .email({error: "L'email est invalide"})
+    .toLowerCase()
+    .trim(),
+  password: z
+    .string()
+    .min(12, "Le mot de passe est requis")
+    .max(100, "Le mot de passe ne peut pas dépasser 100 caractères"),
+});
