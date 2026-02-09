@@ -1,4 +1,3 @@
-// app/page.js
 import HeroSection from "../components/home/HeroSection";
 import FeaturedArticles from "../components/home/FeaturedArticles";
 import ExercisesList from "../components/home/ExercicesList";
