@@ -14,8 +14,8 @@ const SignupStep1 = ({ formData, handleChange, onNext }) => {
             </div>
             <input
               type="text"
-              name="firstName"
-              value={formData.firstName}
+              name="first_name"
+              value={formData.first_name}
               onChange={handleChange}
               placeholder="Jean"
               className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors outline-none"
@@ -31,8 +31,8 @@ const SignupStep1 = ({ formData, handleChange, onNext }) => {
             </div>
             <input
               type="text"
-              name="lastName"
-              value={formData.lastName}
+              name="last_name"
+              value={formData.last_name}
               onChange={handleChange}
               placeholder="Dupont"
               className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors outline-none"
@@ -51,8 +51,8 @@ const SignupStep1 = ({ formData, handleChange, onNext }) => {
           </div>
           <input
             type="date"
-            name="birthDate"
-            value={formData.birthDate}
+            name="birth_date"
+            value={formData.birth_date}
             onChange={handleChange}
             className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors outline-none text-gray-600"
             required

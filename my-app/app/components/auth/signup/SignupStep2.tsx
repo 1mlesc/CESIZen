@@ -62,8 +62,8 @@ const SignupStep2 = ({ formData, handleChange }) => {
           </div>
           <input
             type={showPassword ? "text" : "password"}
-            name="confirmPassword"
-            value={formData.confirmPassword}
+            name="confirm_password"
+            value={formData.confirm_password}
             onChange={handleChange}
             placeholder="••••••••••••"
             className="block w-full pl-10 pr-10 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors outline-none"

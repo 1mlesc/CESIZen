@@ -2,21 +2,25 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { AlertCircle, ArrowLeft } from "lucide-react";
 import SignupStep1 from "./SignupStep1";
 import SignupStep2 from "./SignupStep2";
 
+import { signupAction } from "@/actions/authActions";
+
 const SignupForm = () => {
   const [step, setStep] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   
   // État global du formulaire passé aux étapes
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    birthDate: "",
+    first_name: "",
+    last_name: "",
+    birth_date: "",
     email: "",
     password: "",
-    confirmPassword: ""
+    confirm_password: ""
   });
 
   // Fonction générique pour mettre à jour n'importe quel champ
@@ -30,21 +34,40 @@ const SignupForm = () => {
 
   const handleNext = () => {
     // Validation simple avant de passer à l'étape 2
-    if(formData.firstName && formData.lastName && formData.birthDate) {
+    if(formData.first_name && formData.last_name && formData.birth_date) {
         setStep(2);
     } else {
         alert("Merci de remplir tous les champs");
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Envoi des données
-   //TODO
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await signupAction(formData);
+      if (response?.error) {
+        setError(response.error + " statut : " + response.statusCode);
+      }
+    } catch (error) {
+      setError("Une erreur est survenue. Veuillez réessayer. statut " + error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="w-full max-w-md mx-auto relative">
+
+      {loading && (
+        <div className="absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center z-10 rounded-xl">
+          <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16"></div>
+        </div>
+      )}
+
       {/* Bouton retour */}
       {step === 2 && (
         <button 
@@ -72,6 +95,14 @@ const SignupForm = () => {
           <div className={`h-2 rounded-full transition-all duration-300 ${step === 2 ? "w-8 bg-green-600" : "w-2 bg-gray-200"}`}></div>
         </div>
       </div>
+
+      {/* --- AFFICHAGE DE L'ERREUR --- */}
+      {error && (
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-700 animate-in fade-in slide-in-from-top-2">
+          <AlertCircle className="w-5 h-5 shrink-0" />
+          <p className="text-sm font-medium">{error}</p>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit}>
         
