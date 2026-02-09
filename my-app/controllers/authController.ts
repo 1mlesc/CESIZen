@@ -2,7 +2,6 @@ import { UserModel } from "@/models/User";
 import bcrypt from "bcryptjs";
 import { signupSchema } from "@/schemas/auth/signupSchema";
 
-
 /**
  * 
  * @param data Données d'inscription qui sera vérifier par le schéma

@@ -1,4 +1,3 @@
-import React from "react";
 import SignupForm from "../../../components/auth/signup/SignupForm";
 import AuthImagePanel from "../../../components/auth/signup/AuthImagePanel";
 

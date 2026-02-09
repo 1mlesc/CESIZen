@@ -1,6 +1,11 @@
 import { prisma } from "@/lib/db";
 
 export const UserModel = {
+  /**
+   * Chercher un utilisateur par son email
+   * @param email 
+   * @returns user ou null si non trouvé
+   */
   findByEmail: async (email: string) => {
     return await prisma.user.findUnique({
       where: { email },
@@ -8,6 +13,11 @@ export const UserModel = {
     });
   },
 
+  /**
+   * Créer un nouvel utilisateur avec le rôle USER par défaut
+   * @param data 
+   * @returns nouvel utilisateur créé
+   */
   create: async (data: any) => {
     // On cherche d'abord le rôle USER par défaut
     let userRole = await prisma.role.findFirst({
@@ -32,4 +42,5 @@ export const UserModel = {
       },
     });
   },
+  
 };
