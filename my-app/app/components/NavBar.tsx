@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Timer, LogOut, User } from "lucide-react";
+import { SignOutButton } from "./auth/signout/SignOutButton";
 
 interface NavBarProps {
   session: any;
@@ -121,15 +122,10 @@ const NavBar = ({ session }: NavBarProps) => {
                   href="#"
                   className="px-5 py-2.5 rounded-full text-green-500 font-semibold text-sm shadow-md hover:border-2 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
                 >
-                 <User className="w-4 h-4" />
+                 <User className="w-4 h-4 hover" />
                 </Link>
 
-                <Link
-                  href="/auth/logout"
-                  className="px-5 py-2.5 rounded-full bg-green-600 text-white font-semibold text-sm shadow-md hover:bg-green-700 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
-                >
-                  <LogOut className="w-4 h-4" />
-                </Link>
+                <SignOutButton />
               </div>
               ) : (
               <div className="flex gap-1.5">
@@ -177,6 +173,23 @@ const NavBar = ({ session }: NavBarProps) => {
               {link.name}
             </Link>
           ))}
+          {session ? (
+            <div className="flex gap-1.5 justify-center">
+              <Link
+                href="#"
+                className="px-5 py-2.5 rounded-full text-green-500 font-semibold text-sm shadow-md hover:border-2 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
+              >
+                <User className="w-4 h-4 hover" />
+              </Link>
+
+              <Link
+                href="/auth/logout"
+                className="px-5 py-2.5 rounded-full bg-green-600 text-white font-semibold text-sm shadow-md hover:bg-green-700 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
+              >
+                <LogOut className="w-4 h-4" />
+              </Link>
+            </div>
+          ) : (
           <div className="pt-4 pb-2 flex gap-1.5 justify-center">
             <Link
               href="/auth/signup"
@@ -192,6 +205,7 @@ const NavBar = ({ session }: NavBarProps) => {
               Connexion
             </Link>
           </div>
+          )}
         </div>
       </div>
     </nav>

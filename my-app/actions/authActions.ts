@@ -1,7 +1,7 @@
 "use server"
 
 import { AuthError } from "next-auth";
-import { signIn } from "@/auth";
+import { signIn, signOut } from "@/auth";
 import { registerUser, verifyUser } from "@/controllers/authController";
 import { redirect } from "next/navigation";
 
@@ -36,4 +36,8 @@ export async function loginAction(formData: any) {
 
     throw error;
   }
+}
+
+export async function logoutAction() {
+  await signOut({ redirectTo: "/auth/login" });
 }
