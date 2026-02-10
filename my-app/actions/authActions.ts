@@ -1,5 +1,7 @@
 "use server"
 
+import { AuthError } from "next-auth";
+import { signIn } from "@/auth";
 import { registerUser, verifyUser } from "@/controllers/authController";
 import { redirect } from "next/navigation";
 
@@ -14,13 +16,24 @@ export async function signupAction(formData: any) {
   }
 }
 
-export async function loginAction(formData) {
-  const result = await verifyUser(formData);
+export async function loginAction(formData: any) {
+  try {
+    await signIn("credentials", {
+      email: formData.email,
+      password: formData.password,
+      redirectTo: "/", // Redirection après connexion réussie
+    });
+    
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case "CredentialsSignin":
+          return { error: "Identifiants incorrects." };
+        default:
+          return { error: "Une erreur est survenue." };
+      }
+    }
 
-  if (result.success) {
-    // TODO: session utilisateur
-    redirect("/"); // Redirection vers l'accueil ou le tableau de bord
-  } else {
-    return { error: result.error };
+    throw error;
   }
 }
