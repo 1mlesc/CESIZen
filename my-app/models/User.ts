@@ -42,5 +42,31 @@ export const UserModel = {
       },
     });
   },
+
+
+  /**
+   * Modifier les informations d'un utilisateur
+   * @param email adresse mail de l'utilisateur
+   * @param data données à mettre à jour
+   * @returns l'utilisateur mis à jour
+   */
+  update: async (email: string, data: any) => {
+    return await prisma.user.update({
+      where: { email },
+      data: data,
+    });
+  },
+  
+  /**
+   * Trouver un utilisateur par son email en incluant le mot de passe
+   * @param email adresse mail de l'utilisateur
+   * @returns l'utilisateur trouvé ou null si non trouvé
+   */
+  findByEmailWithPassword: async (email: string) => {
+    return await prisma.user.findUnique({
+      where: { email },
+    });
+  }
+
   
 };
