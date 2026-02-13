@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
+
+import NavBar from "../components/NavBar";
+import Footer from "../components/Footer";
+import { auth } from "@/auth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,17 +21,20 @@ export const metadata: Metadata = {
   description: "Application CESIZen",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth(); // On récupère la session côté serveur
   return (
     <html lang="fr">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 text-gray-900`}
       >
-        {children}
+        <NavBar session={session} />
+          {children}
+        <Footer />
       </body>
     </html>
   );

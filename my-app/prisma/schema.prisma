@@ -1,0 +1,129 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+//Models
+
+model User {
+  id               String    @id @default(cuid())
+  email            String    @unique
+  family_name      String
+  first_name       String
+  birthdate        DateTime
+  password         String
+  statut           statut    @default(ON)
+  token_reset      String?
+  token_expiration DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  //Clés étrangères et Relations
+  roleId           Int
+  role             Role      @relation(fields: [roleId], references: [id])
+
+  //Relations 1-N (Un utilisateur a plusieurs ....)
+  historiqueExerciceRespiratoire HistoriqueExerciceRespiratoire[]
+  Contenu                        Contenu[]
+}
+
+model Role {
+  id    Int    @id @default(autoincrement())
+  role  roles  @default(USER)
+
+  //Relation : un rôle peut être assigné à plusieurs utilisateurs
+  user User[]
+}
+
+model ExerciceRespiratoire {
+  id                  String     @id @default(cuid())
+  duree               Float
+  rythme_inspiration  Float
+  rythme_expiration   Float
+  rythme_apnee        Float
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+}
+
+model HistoriqueExerciceRespiratoire {
+  id                     String                   @id @default(cuid())
+  date                   DateTime
+  exerciceRespiratoireId String
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @updatedAt
+
+  //Clés étrangères et Relations
+  userId               String
+  user                 User                     @relation(fields: [userId], references: [id])
+}
+
+model Categorie {
+  id   Int  @id @default(autoincrement())
+  name nomCategorie @unique
+
+  //Relation : une catégorie peut avoir plusieurs contenus
+  contenus Contenu[]
+}
+
+model Contenu {
+  id                Int  @id @default(autoincrement())
+  title             String
+  corps             String  @db.Text
+  type              typeContenu
+  statut            statutContenu @default(DRAFT)
+  date_publication  DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  //Relation Auteur
+  auteurId    String
+  auteur      User  @relation(fields: [auteurId], references: [id])
+
+  //Relation Catégorie (Un contneu peut avoir plusieurs catégories)
+  categories Categorie[]
+}
+
+//Enums
+
+enum statut {
+  ON
+  OFF
+}
+
+enum roles {
+  ADMIN
+  USER
+}
+
+enum typeMedia {
+  VIDEO
+  IMAGE
+  AUDIO
+}
+
+enum typeContenu {
+  ARTICLE
+}
+
+
+enum statutContenu {
+  PUBLISHED
+  DRAFT
+  ARCHIVED
+}
+
+enum nomCategorie {
+  SANTE
+  AIDE
+}
