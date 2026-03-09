@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { fetchAllExercices } from "@/controllers/exerciceController";
 import ExerciceCard from "@/app/components/exercices/ExercicesCard";
 import ExerciceStats from "@/app/components/exercices/ExerciceStats";
+import CustomExerciceForm from "@/app/components/exercices/CustomExerciceForm";
 
 export default async function ExercicesRespiratoiresPage() {
   // 1. Protection de la route
@@ -27,6 +28,9 @@ export default async function ExercicesRespiratoiresPage() {
 
         {/* Statistiques si connecté */}
         {session && <ExerciceStats />}
+
+        {/* Formulaire personnalisé si connecté */}
+        {session && <CustomExerciceForm />}
 
         {/* Grille d'exercices */}
         {exercices.length === 0 ? (

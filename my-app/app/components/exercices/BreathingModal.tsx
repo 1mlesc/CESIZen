@@ -85,12 +85,14 @@ export default function BreathingModal({ exercice, onClose }) {
   const handleComplete = async () => {
     setIsActive(false);
     clearInterval(timerRef.current);
-    setIsSaving(true);
     
-    await saveSessionAction(exercice.id);
-    setIsSaving(false);
-
-    window.dispatchEvent(new Event("refreshStats"));
+    // Si ce n'est pas un exercice personnalisé, on sauvegarde
+    if (exercice.id !== "custom") {
+      setIsSaving(true);
+      await saveSessionAction(exercice.id);
+      setIsSaving(false);
+      window.dispatchEvent(new Event("refreshStats"));
+    }
   };
 
   return (
