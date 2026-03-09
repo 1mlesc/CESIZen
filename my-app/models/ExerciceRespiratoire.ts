@@ -17,5 +17,47 @@ export const ExerciceRespiratoireModel = {
         date: new Date()
       }
     });
+  },
+
+  // Récupérer les statistiques d'un utilisateur
+  getUserStats: async (userId: string) => {
+    try {
+      const history = await prisma.historiqueExerciceRespiratoire.findMany({
+        where: { 
+          userId: userId 
+        },
+        include: {
+          exercice: true
+        },
+        orderBy: { 
+          date: 'desc' 
+        }
+      });
+
+      const totalSessions = history.length;
+      const totalDuration = history.reduce((acc, curr) => {
+        const duration = curr.exercice?.duree || 0;
+        return acc + duration;
+      }, 0);
+      
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      
+      const recentHistory = history.filter(h => {
+        if (!h.date) return false;
+        const historyDate = new Date(h.date);
+        return historyDate >= sevenDaysAgo;
+      });
+      
+      return {
+        totalSessions,
+        totalDuration,
+        history: history.slice(0, 5),
+        recentCount: recentHistory.length
+      };
+    } catch (error) {
+      console.error("Erreur critique dans ExerciceRespiratoireModel.getUserStats:", error);
+      throw error;
+    }
   }
 };
