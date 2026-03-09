@@ -52,6 +52,8 @@ model ExerciceRespiratoire {
   rythme_inspiration  Float
   rythme_expiration   Float
   rythme_apnee        Float
+
+  historique          HistoriqueExerciceRespiratoire[]
   createdAt           DateTime   @default(now())
   updatedAt           DateTime   @updatedAt
 }
@@ -60,6 +62,7 @@ model HistoriqueExerciceRespiratoire {
   id                     String                   @id @default(cuid())
   date                   DateTime
   exerciceRespiratoireId String
+  exercice               ExerciceRespiratoire @relation(fields: [exerciceRespiratoireId], references: [id], onDelete: Cascade)
   createdAt              DateTime                 @default(now())
   updatedAt              DateTime                 @updatedAt
 
