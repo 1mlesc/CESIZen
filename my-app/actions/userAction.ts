@@ -1,7 +1,7 @@
 "use server";
 
 import { auth } from "@/auth";
-import { getUserProfile, updateUserProfile, changeUserPassword } from "@/controllers/userController";
+import { getUserProfile, updateUserProfile, changeUserPassword, fetchAllUsers } from "@/controllers/userController";
 import { revalidatePath } from "next/cache";
 
 // Action pour récupérer les infos du profil
@@ -43,4 +43,17 @@ export async function updatePasswordAction(formData: any) {
     return { success: true, message: "Mot de passe modifié avec succès." };
   }
   return { error: result.error };
+}
+
+// Action ADMIN : Récupérer tous les utilisateurs
+export async function getAllUsersAction() {
+  const session = await auth();
+  
+  // Vérification stricte du rôle ADMIN
+  if (!session || (session.user as any).role !== "ADMIN") {
+    return { success: false, error: "Accès refusé. Rôle administrateur requis." };
+  }
+
+  const result = await fetchAllUsers();
+  return result;
 }

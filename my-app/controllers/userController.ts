@@ -67,3 +67,16 @@ export const changeUserPassword = async (email: string, data: any) => {
     return { success: false, error: "Erreur serveur." };
   }
 };
+
+// 3. Admin : Récupérer tous les utilisateurs
+export const fetchAllUsers = async () => {
+  try {
+    const users = await UserModel.getAll();
+    // On retire les mots de passe avant de renvoyer
+    const safeUsers = users.map(({ password, ...rest }) => rest);
+    return { success: true, data: safeUsers };
+  } catch (error) {
+    console.error("Fetch all users error:", error);
+    return { success: false, error: "Erreur lors de la récupération des utilisateurs." };
+  }
+};
