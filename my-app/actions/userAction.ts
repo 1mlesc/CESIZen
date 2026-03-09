@@ -1,8 +1,10 @@
 "use server";
 
 import { auth } from "@/auth";
-import { getUserProfile, updateUserProfile, changeUserPassword, fetchAllUsers } from "@/controllers/userController";
+import { getUserProfile, updateUserProfile, changeUserPassword, fetchAllUsers, adminUserUpdate, adminUserDelete } from "@/controllers/userController";
 import { revalidatePath } from "next/cache";
+import { prisma } from "@/lib/db";
+import bcrypt from "bcryptjs";
 
 // Action pour récupérer les infos du profil
 export async function getUserProfileAction() {
@@ -25,7 +27,6 @@ export async function updateProfileAction(formData: any) {
   const result = await updateUserProfile(session.user.email, formData);
 
   if (result.success) {
-    // Met à jour toutes les pages pour refléter le nouveau nom
     revalidatePath("/dashboard"); 
     return { success: true, message: "Profil mis à jour !" };
   }
@@ -48,12 +49,64 @@ export async function updatePasswordAction(formData: any) {
 // Action ADMIN : Récupérer tous les utilisateurs
 export async function getAllUsersAction() {
   const session = await auth();
-  
-  // Vérification stricte du rôle ADMIN
   if (!session || (session.user as any).role !== "ADMIN") {
     return { success: false, error: "Accès refusé. Rôle administrateur requis." };
   }
+  return await fetchAllUsers();
+}
 
-  const result = await fetchAllUsers();
+// Action ADMIN : Mettre à jour un utilisateur
+export async function adminUpdateUserAction(id: string, data: any) {
+  const session = await auth();
+  if (!session || (session.user as any).role !== "ADMIN") return { success: false, error: "Non autorisé" };
+
+  const result = await adminUserUpdate(id, data);
+  if (result.success) revalidatePath("/admin/users");
   return result;
+}
+
+// Action ADMIN : Supprimer un utilisateur
+export async function adminDeleteUserAction(id: string) {
+  const session = await auth();
+  if (!session || (session.user as any).role !== "ADMIN") return { success: false, error: "Non autorisé" };
+
+  const result = await adminUserDelete(id);
+  if (result.success) revalidatePath("/admin/users");
+  return result;
+}
+
+// Action ADMIN : Créer un utilisateur
+export async function adminCreateUserAction(data: any) {
+  const session = await auth();
+  if (!session || (session.user as any).role !== "ADMIN") return { success: false, error: "Non autorisé" };
+
+  try {
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    
+    // Déterminer le rôle
+    const roleRecord = await prisma.role.findFirst({
+      where: { role: data.role === "ADMIN" ? "ADMIN" : "USER" }
+    });
+    const roleId = roleRecord?.id;
+
+    if (!roleId) return { success: false, error: "Rôle introuvable." };
+
+    await prisma.user.create({
+      data: {
+        email: data.email,
+        family_name: data.family_name,
+        first_name: data.first_name,
+        birthdate: new Date(data.birthdate),
+        password: hashedPassword,
+        roleId: roleId,
+        statut: data.statut || "ON"
+      },
+    });
+
+    revalidatePath("/admin/users");
+    return { success: true };
+  } catch (error) {
+    console.error("Admin create user error:", error);
+    return { success: false, error: "Erreur lors de la création." };
+  }
 }

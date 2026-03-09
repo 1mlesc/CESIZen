@@ -80,3 +80,40 @@ export const fetchAllUsers = async () => {
     return { success: false, error: "Erreur lors de la récupération des utilisateurs." };
   }
 };
+
+export const adminUserUpdate = async (id: string, data: any) => {
+  try {
+    // Si un nouveau mot de passe est fourni, on le hache
+    if (data.password && data.password.trim() !== "") {
+      data.password = await bcrypt.hash(data.password, 10);
+    } else {
+      delete data.password;
+    }
+
+    // Gestion de la date
+    if (data.birthdate) {
+      data.birthdate = new Date(data.birthdate);
+    }
+
+    // Gestion du rôle (on attend un ID de rôle)
+    if (data.roleId) {
+      data.roleId = parseInt(data.roleId);
+    }
+
+    await UserModel.updateById(id, data);
+    return { success: true };
+  } catch (error) {
+    console.error("Admin user update error:", error);
+    return { success: false, error: "Erreur lors de la mise à jour." };
+  }
+};
+
+export const adminUserDelete = async (id: string) => {
+  try {
+    await UserModel.delete(id);
+    return { success: true };
+  } catch (error) {
+    console.error("Admin user delete error:", error);
+    return { success: false, error: "Erreur lors de la suppression." };
+  }
+};
