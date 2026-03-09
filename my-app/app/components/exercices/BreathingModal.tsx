@@ -26,44 +26,48 @@ export default function BreathingModal({ exercice, onClose }) {
   const progress = ((exercice.duree - timeLeft) / exercice.duree) * 100;
   const strokeDashoffset = circumference - (progress / 100) * circumference;
 
+  // Calcul de la phase et de l'échelle en fonction du temps écoulé (valeurs dérivées)
+  const elapsed = exercice.duree - timeLeft;
+  const currentCycleTime = elapsed % cycleTime;
+  
+  let currentPhase = "Prêt ?";
+  let currentScale = 1;
+
+  if (isActive && timeLeft > 0) {
+    if (currentCycleTime < tInsp) {
+      currentPhase = "Inspirez";
+      currentScale = 1 + 0.5 * (currentCycleTime / tInsp);
+    } else if (currentCycleTime < tInsp + tApnee) {
+      currentPhase = "Maintenez";
+      currentScale = 1.5;
+    } else {
+      currentPhase = "Expirez";
+      const expElapsed = currentCycleTime - tInsp - tApnee;
+      currentScale = 1.5 - 0.5 * (expElapsed / tExp);
+    }
+  } else if (timeLeft <= 0) {
+    currentPhase = "Terminé !";
+    currentScale = 1;
+  }
+
   useEffect(() => {
     if (isActive && !isPaused && timeLeft > 0) {
       timerRef.current = setInterval(() => {
-        setTimeLeft((prev) => {
-          const newTime = Math.max(prev - 0.05, 0); // Maj 20 fois par seconde pour une fluidité parfaite
-
-          if (newTime <= 0) {
-            handleComplete();
-            return 0;
-          }
-
-          // Déterminer la phase et l'échelle (animation respiratoire)
-          const elapsed = exercice.duree - newTime;
-          const currentCycleTime = elapsed % cycleTime;
-
-          if (currentCycleTime < tInsp) {
-            setPhase("Inspirez");
-            // Grossit de 1 à 1.5
-            setScale(1 + 0.5 * (currentCycleTime / tInsp));
-          } else if (currentCycleTime < tInsp + tApnee) {
-            setPhase("Maintenez");
-            setScale(1.5); // Reste bloqué au max
-          } else {
-            setPhase("Expirez");
-            // Rétrécit de 1.5 à 1
-            const expElapsed = currentCycleTime - tInsp - tApnee;
-            setScale(1.5 - 0.5 * (expElapsed / tExp));
-          }
-
-          return newTime;
-        });
-      }, 50); // Intervalle très court pour rendre l'animation fluide
+        setTimeLeft((prev) => Math.max(prev - 0.05, 0));
+      }, 50);
     } else {
       clearInterval(timerRef.current);
     }
 
     return () => clearInterval(timerRef.current);
   }, [isActive, isPaused, timeLeft]);
+
+  // Gérer la complétion dans un effet séparé
+  useEffect(() => {
+    if (timeLeft === 0 && isActive) {
+      handleComplete();
+    }
+  }, [timeLeft, isActive]);
 
   const handleStart = () => {
     setIsActive(true);
@@ -76,20 +80,19 @@ export default function BreathingModal({ exercice, onClose }) {
     setIsActive(false);
     setIsPaused(false);
     setTimeLeft(exercice.duree);
-    setPhase("Prêt ?");
-    setScale(1);
   };
 
   const handleComplete = async () => {
     setIsActive(false);
-    setPhase("Terminé !");
-    setScale(1);
     clearInterval(timerRef.current);
-    setIsSaving(true);
     
-    // Enregistrement strict uniquement si l'exercice est allé au bout
-    await saveSessionAction(exercice.id);
-    setIsSaving(false);
+    // Si ce n'est pas un exercice personnalisé, on sauvegarde
+    if (exercice.id !== "custom") {
+      setIsSaving(true);
+      await saveSessionAction(exercice.id);
+      setIsSaving(false);
+      window.dispatchEvent(new Event("refreshStats"));
+    }
   };
 
   return (
@@ -99,7 +102,7 @@ export default function BreathingModal({ exercice, onClose }) {
         {/* Bouton de fermeture */}
         <button 
           onClick={onClose} 
-          disabled={isActive && !isPaused} // Empêche de fermer par erreur pendant l'action
+          disabled={isActive && !isPaused}
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-900 disabled:opacity-20 transition-colors"
         >
           <X className="w-6 h-6" />
@@ -111,17 +114,17 @@ export default function BreathingModal({ exercice, onClose }) {
           {/* ZONE D'ANIMATION */}
           <div className="relative flex items-center justify-center w-72 h-72">
             
-            {/* Le poumon central (Cercle plein qui respire) */}
+            {/* Le poumon central */}
             <div 
               className="absolute bg-green-100 rounded-full transition-transform ease-linear"
               style={{ 
                 width: '160px', 
                 height: '160px', 
-                transform: `scale(${scale})` 
+                transform: `scale(${currentScale})` 
               }}
             />
 
-            {/* Jauge du temps total (Anneau extérieur) */}
+            {/* Jauge du temps total */}
             <svg className="absolute inset-0 w-full h-full transform -rotate-90">
               <circle
                 cx="144" cy="144" r={radius}
@@ -143,9 +146,9 @@ export default function BreathingModal({ exercice, onClose }) {
                 {Math.ceil(timeLeft)}
               </span>
               <span className={`text-lg font-bold mt-1 tracking-wide uppercase ${
-                 phase === "Inspirez" ? "text-blue-600" : phase === "Expirez" ? "text-green-600" : "text-gray-600"
+                 currentPhase === "Inspirez" ? "text-blue-600" : currentPhase === "Expirez" ? "text-green-600" : "text-gray-600"
               }`}>
-                {phase}
+                {currentPhase}
               </span>
             </div>
           </div>
