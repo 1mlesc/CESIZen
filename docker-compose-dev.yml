@@ -1,0 +1,28 @@
+services:
+  app:
+    image: node:22-alpine
+    container_name: cesizen_app_dev
+    working_dir: /app
+    # On force l'installation malgré les conflits de peer dependencies (Next 16 vs NextAuth v5)
+    command: sh -c "npm install --legacy-peer-deps && npx prisma generate && npm run dev"
+    env_file:
+      - ./my-app/.env
+    volumes:
+      - ./my-app:/app
+      - /app/node_modules
+      - /app/.next
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://admin_cesizen:admin_cesizen@host.docker.internal:5432/dev_cesizen?schema=public
+      NEXTAUTH_URL: http://localhost:3000
+      NODE_ENV: development
+    # Ajout de la machine hôte pour postgreSQL héberger en local
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - cesizen_network
+
+networks:
+  cesizen_network:
+    driver: bridge
