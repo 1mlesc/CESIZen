@@ -29,6 +29,8 @@ export const authConfig = {
       if (user) {
         token.id = user.id;
         token.role = (user as any).role?.role || (user as any).role || "USER";
+        token.firstName = (user as any).first_name;
+        token.lastName = (user as any).family_name;
       }
       return token;
     },
@@ -36,6 +38,8 @@ export const authConfig = {
       if (token.id && session.user) {
         session.user.id = token.id as string;
         (session.user as any).role = token.role as string;
+        (session.user as any).firstName = token.firstName as string;
+        (session.user as any).lastName = token.lastName as string;
       }
       return session;
     },

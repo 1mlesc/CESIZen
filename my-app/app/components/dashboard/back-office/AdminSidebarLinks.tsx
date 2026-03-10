@@ -2,14 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Users, LayoutDashboard, Settings, Wind, FileText } from "lucide-react";
+import { Users, LayoutDashboard, Wind, FileText } from "lucide-react";
 
 const links = [
   { href: "/admin", label: "Tableau de bord", icon: LayoutDashboard },
   { href: "/admin/users", label: "Utilisateurs", icon: Users },
   { href: "/admin/exercices", label: "Exercices", icon: Wind },
   { href: "/admin/content", label: "Contenus", icon: FileText },
-  { href: "/admin/settings", label: "Paramètres", icon: Settings },
 ];
 
 export default function AdminSidebarLinks() {

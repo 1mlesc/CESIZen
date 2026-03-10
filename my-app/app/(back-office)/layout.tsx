@@ -1,10 +1,10 @@
 import '../globals.css';
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import { ShieldCheck } from "lucide-react";
-import { SignOutButton } from "@/app/components/auth/signout/SignOutButton";
+import { ShieldCheck, Home } from "lucide-react";
 import AdminSidebarLinks from "@/app/components/dashboard/back-office/AdminSidebarLinks";
 import { Geist, Geist_Mono } from "next/font/google";
+import Link from 'next/link';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,6 +28,8 @@ export default async function AdminLayout({
     redirect("/"); 
   }
 
+  const user = session.user as any;
+
   return (
     <html lang="fr">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
@@ -45,16 +47,24 @@ export default async function AdminLayout({
 
             <div className="p-4 border-t border-gray-800 bg-gray-900">
               <div className="flex items-center gap-3 px-4 py-3 text-sm text-gray-400">
-                <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center font-bold text-blue-400 shrink-0">
-                  {session.user?.name?.charAt(0) || "A"}
+                <div className="w-10 h-10 rounded-full bg-blue-600/20 flex items-center justify-center font-bold text-blue-400 shrink-0 border border-blue-600/30">
+                  {user?.firstName?.charAt(0) || "A"}
                 </div>
                 <div className="truncate">
-                  <p className="font-medium text-white truncate">{session.user?.name || "Admin"}</p>
-                  <p className="text-[10px] uppercase font-bold text-blue-500 tracking-wider">Administrateur</p>
+                  <p className="font-bold text-white truncate leading-tight">
+                    {user?.firstName} {user?.lastName}
+                  </p>
+                  <p className="text-[10px] uppercase font-bold text-blue-500 tracking-wider mt-0.5">Administrateur</p>
                 </div>
               </div>
               <div className="mt-2">
-                <SignOutButton />
+                <Link 
+                  href="/"
+                  className="flex items-center gap-3 px-4 py-2 text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-all group"
+                >
+                  <Home className="w-4 h-4 group-hover:text-blue-400" />
+                  Retour accueil
+                </Link>
               </div>
             </div>
           </aside>
@@ -63,7 +73,7 @@ export default async function AdminLayout({
           <main className="flex-1 ml-64 overflow-y-auto">
             <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 sticky top-0 z-10 shadow-sm">
               <h2 className="font-semibold text-gray-800">Back-Office CESIZen</h2>
-              <div className="text-sm text-gray-500 italic">Version 1.0.0</div>
+              <div className="text-sm text-gray-500 italic">Version 0.0.1</div>
             </header>
             <div className="p-8 max-w-7xl mx-auto">
               {children}
