@@ -4,15 +4,15 @@ import React, { useState, useEffect, useRef } from "react";
 import { Play, Pause, Square, X, Loader2 } from "lucide-react";
 import { saveSessionAction } from "@/actions/exerciceActions";
 
-export default function BreathingModal({ exercice, onClose }) {
-  const [timeLeft, setTimeLeft] = useState(exercice.duree);
+export default function BreathingModal({ exercice, onClose }: { exercice: any, onClose: () => void }) {
+  const [timeLeft, setTimeLeft] = useState<number>(exercice.duree);
   const [isActive, setIsActive] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [phase, setPhase] = useState("Prêt ?"); 
   const [scale, setScale] = useState(1);
   
-  const timerRef = useRef(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
   
   // Constantes du cycle
   const tInsp = exercice.rythme_inspiration;
@@ -56,10 +56,12 @@ export default function BreathingModal({ exercice, onClose }) {
         setTimeLeft((prev) => Math.max(prev - 0.05, 0));
       }, 50);
     } else {
-      clearInterval(timerRef.current);
+      if (timerRef.current) clearInterval(timerRef.current);
     }
 
-    return () => clearInterval(timerRef.current);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
   }, [isActive, isPaused, timeLeft]);
 
   // Gérer la complétion dans un effet séparé
@@ -84,7 +86,7 @@ export default function BreathingModal({ exercice, onClose }) {
 
   const handleComplete = async () => {
     setIsActive(false);
-    clearInterval(timerRef.current);
+    if (timerRef.current) clearInterval(timerRef.current);
     
     // Si ce n'est pas un exercice personnalisé, on sauvegarde
     if (exercice.id !== "custom") {

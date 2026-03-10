@@ -24,7 +24,7 @@ const SignupForm = () => {
   });
 
   // Fonction générique pour mettre à jour n'importe quel champ
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -41,7 +41,7 @@ const SignupForm = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Envoi des données
     setLoading(true);

@@ -5,9 +5,9 @@ import { getUserStatsAction } from "@/actions/exerciceActions";
 import { Clock, Calendar, CheckCircle2, AlertCircle } from "lucide-react";
 
 export default function ExerciceStats() {
-  const [stats, setStats] = useState(null);
+  const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const loadStats = useCallback(async () => {
     try {

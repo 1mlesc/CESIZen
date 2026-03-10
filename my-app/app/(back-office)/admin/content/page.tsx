@@ -8,8 +8,8 @@ export default async function AdminContentPage() {
     getAllCategoriesAction(),
   ]);
 
-  const contenus = contenusResult.success ? contenusResult.data : [];
-  const categories = categoriesResult.success ? categoriesResult.data : [];
+  const contenus = (contenusResult.success && "data" in contenusResult && contenusResult.data) ? contenusResult.data : [];
+  const categories = (categoriesResult.success && "data" in categoriesResult && categoriesResult.data) ? categoriesResult.data : [];
 
   return (
     <ContenuTable 

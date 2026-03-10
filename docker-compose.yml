@@ -1,0 +1,25 @@
+services:
+  # Application Next.js (Production)
+  app:
+    build:
+      context: ./my-app
+      dockerfile: Dockerfile
+    container_name: cesizen_app_prod
+    restart: always
+    environment:
+      # On utilise le nom du service 'db' pour communiquer entre les containers
+      DATABASE_URL: ${DATABASE_URL_PROD}
+      AUTH_SECRET: ${AUTH_SECRET}
+      NEXTAUTH_URL: ${NEXTAUTH_URL}
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+    networks:
+      - cesizen_prod_network
+
+networks:
+  cesizen_prod_network:
+    driver: bridge
+
+volumes:
+  postgres_prod_data:

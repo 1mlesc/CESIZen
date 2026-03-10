@@ -11,16 +11,18 @@ COPY package.json package-lock.json ./
 # Copie du dossier prisma pour la génération du client
 COPY prisma ./prisma/
 
-# Installation des dépendances incluant Prisma
-RUN npm ci
+# Installation des dépendances incluant Prisma (avec le flag pour ignorer les conflits de versions)
+RUN npm ci --legacy-peer-deps
 
 # Génération du client Prisma (basé sur schema.prisma)
 RUN npx prisma generate
 
-# Construction de l'application
+# Étape 2 : Construction de l'application
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
+# On récupère aussi le client Prisma généré s'il est hors de node_modules
+COPY --from=deps /app/lib/generated ./lib/generated 
 COPY . .
 
 # Désactivation de la télémétrie Next.js pour le build

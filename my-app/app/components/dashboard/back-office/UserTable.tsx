@@ -65,13 +65,14 @@ export default function UserTable({ initialUsers }: { initialUsers: any[] }) {
             type="text" 
             placeholder="Rechercher par nom, email..." 
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
+
             className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all text-sm"
           />
         </div>
         <select 
           value={selectedRole}
-          onChange={(e) => setSelectedRole(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedRole(e.target.value)}
           className="px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500 bg-white"
         >
           <option>Tous les rôles</option>

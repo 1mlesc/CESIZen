@@ -9,20 +9,20 @@ import bcrypt from "bcryptjs";
 // Action pour récupérer les infos du profil
 export async function getUserProfileAction() {
   const session = await auth();
-  if (!session || !session.user?.email) return { error: "Non autorisé" };
+  if (!session || !session.user?.email) return { success: false, error: "Non autorisé" };
 
   const result = await getUserProfile(session.user.email);
 
   if (result.success) {
     return { success: true, user: result.data };
   }
-  return { error: result.error };
+  return { success: false, error: result.error };
 }
 
 // Action pour le profil
 export async function updateProfileAction(formData: any) {
   const session = await auth();
-  if (!session || !session.user?.email) return { error: "Non autorisé" };
+  if (!session || !session.user?.email) return { success: false, error: "Non autorisé" };
 
   const result = await updateUserProfile(session.user.email, formData);
 
@@ -30,20 +30,20 @@ export async function updateProfileAction(formData: any) {
     revalidatePath("/dashboard"); 
     return { success: true, message: "Profil mis à jour !" };
   }
-  return { error: result.error };
+  return { success: false, error: result.error };
 }
 
 // Action pour le mot de passe
 export async function updatePasswordAction(formData: any) {
   const session = await auth();
-  if (!session || !session.user?.email) return { error: "Non autorisé" };
+  if (!session || !session.user?.email) return { success: false, error: "Non autorisé" };
 
   const result = await changeUserPassword(session.user.email, formData);
 
   if (result.success) {
     return { success: true, message: "Mot de passe modifié avec succès." };
   }
-  return { error: result.error };
+  return { success: false, error: result.error };
 }
 
 // Action ADMIN : Récupérer tous les utilisateurs

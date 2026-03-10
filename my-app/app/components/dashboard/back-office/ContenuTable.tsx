@@ -76,13 +76,13 @@ export default function ContenuTable({
             type="text" 
             placeholder="Rechercher par titre, contenu..." 
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all text-sm"
           />
         </div>
         <select 
           value={selectedStatus}
-          onChange={(e) => setSelectedStatus(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedStatus(e.target.value)}
           className="px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500 bg-white"
         >
           <option>Tous les statuts</option>
@@ -135,7 +135,7 @@ export default function ContenuTable({
                     <td className="px-6 py-4">
                       <select 
                         value={c.statut}
-                        onChange={(e) => handleUpdateStatus(c.id, e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleUpdateStatus(c.id, e.target.value)}
                         className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border outline-none cursor-pointer transition-all ${status.color}`}
                       >
                         <option value="PUBLISHED">Publié</option>

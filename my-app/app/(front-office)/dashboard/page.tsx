@@ -13,9 +13,10 @@ export default async function ProfilePage() {
 
   // Récupération des données utilisateur complètes via le controller (via l'action server)
   const profileRes = await getUserProfileAction();
-  
+
   // Si on n'arrive pas à récup l'user, on peut fallback sur la session ou afficher une erreur
-  const user = profileRes.success ? profileRes.user : session.user;
+  const user = (profileRes.success && "user" in profileRes) ? profileRes.user : session.user;
+
   const isAdmin = (session.user as any)?.role === "ADMIN";
 
   return (

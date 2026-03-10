@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
 
-const SignupStep2 = ({ formData, handleChange }) => {
+interface SignupStep2Props {
+  formData: any;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+const SignupStep2 = ({ formData, handleChange }: SignupStep2Props) => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (

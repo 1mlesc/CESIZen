@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import BreathingModal from "./BreathingModal";
 import { PlayCircle, Clock, Wind } from "lucide-react";
 
-export default function ExerciceCard({ exercice }) {
+export default function ExerciceCard({ exercice }: { exercice: any }) {
   const [showModal, setShowModal] = useState(false);
 
   return (

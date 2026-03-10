@@ -10,7 +10,7 @@ export default async function ExercicesRespiratoiresPage() {
 
   // 2. Récupération des données côté serveur (Zéro attente côté client)
   const result = await fetchAllExercices();
-  const exercices = result.success ? result.data : [];
+  const exercices = (result.success && "data" in result && result.data) ? result.data : [];
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 pt-20">

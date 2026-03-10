@@ -39,7 +39,7 @@ export const registerUser = async (data: any) => {
  * @param data Données de connexion qui sera vérifiée par le schéma
  * @returns 
  */
-export const verifyUser = async (data) => {
+export const verifyUser = async (data: any) => {
   try {
     // 1. Validation des données d'entrée via Zod
     const validation = loginSchema.safeParse(data);
