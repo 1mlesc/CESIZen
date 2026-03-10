@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 import {
   fetchAllContenus,
+  getContenuById,
   createContenu,
   updateContenu,
   updateContenuStatus,
@@ -21,6 +22,37 @@ async function checkAdmin() {
     throw new Error("Non autorisé. Accès administrateur requis.");
   }
   return session;
+}
+
+// Actions Publiques
+export async function getPublishedContenusAction() {
+  try {
+    const result = await fetchAllContenus();
+    if (result.success) {
+      // Filtrer pour ne garder que les publiés pour le public
+      const published = result.data.filter((c: any) => c.statut === "PUBLISHED");
+      return { success: true, data: published };
+    }
+    return result;
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
+// Action publique pour un seul contenu
+export async function getContenuByIdAction(id: number) {
+  try {
+    const result = await getContenuById(id);
+    if (!result.success) return result;
+    
+    const contenu = result.data;
+    if (contenu.statut !== "PUBLISHED") {
+      return { success: false, error: "Contenu non publié." };
+    }
+    return { success: true, data: contenu };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
 }
 
 // 1. Actions pour les Contenus

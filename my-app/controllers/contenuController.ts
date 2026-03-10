@@ -13,6 +13,17 @@ export const fetchAllContenus = async () => {
   }
 };
 
+export const getContenuById = async (id: number) => {
+  try {
+    const contenu = await ContenuModel.getById(id);
+    if (!contenu) return { success: false, error: "Contenu introuvable." };
+    return { success: true, data: contenu };
+  } catch (error) {
+    console.error("Fetch contenu by id error:", error);
+    return { success: false, error: "Erreur lors de la récupération du contenu." };
+  }
+};
+
 export const createContenu = async (data: any) => {
   const validation = contenuSchema.safeParse(data);
   if (!validation.success) return { success: false, error: validation.error.issues[0].message };

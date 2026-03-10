@@ -1,8 +1,12 @@
 import HeroSection from "../components/home/HeroSection";
 import FeaturedArticles from "../components/home/FeaturedArticles";
 import ExercisesList from "../components/home/ExercicesList";
+import { getPublishedContenusAction } from "@/actions/contenuActions";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const result = await getPublishedContenusAction();
+  const articles = result.success ? result.data : [];
+
   return (
     <div className="flex flex-col min-h-screen">
       
@@ -13,7 +17,7 @@ export default function HomePage() {
       <ExercisesList />
 
       {/* 3. Section Articles (Blog/Conseils) */}
-      <FeaturedArticles />
+      <FeaturedArticles articles={articles} />
 
     </div>
   );
