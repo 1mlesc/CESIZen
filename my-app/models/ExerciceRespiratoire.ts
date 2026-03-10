@@ -8,6 +8,38 @@ export const ExerciceRespiratoireModel = {
     });
   },
 
+  // Créer un exercice
+  create: async (data: any) => {
+    return await prisma.exerciceRespiratoire.create({
+      data: {
+        duree: parseFloat(data.duree),
+        rythme_inspiration: parseFloat(data.rythme_inspiration),
+        rythme_expiration: parseFloat(data.rythme_expiration),
+        rythme_apnee: parseFloat(data.rythme_apnee),
+      }
+    });
+  },
+
+  // Modifier un exercice
+  updateById: async (id: string, data: any) => {
+    return await prisma.exerciceRespiratoire.update({
+      where: { id },
+      data: {
+        duree: parseFloat(data.duree),
+        rythme_inspiration: parseFloat(data.rythme_inspiration),
+        rythme_expiration: parseFloat(data.rythme_expiration),
+        rythme_apnee: parseFloat(data.rythme_apnee),
+      }
+    });
+  },
+
+  // Supprimer un exercice
+  delete: async (id: string) => {
+    return await prisma.exerciceRespiratoire.delete({
+      where: { id }
+    });
+  },
+
   // Enregistrer la session complétée
   saveHistory: async (userId: string, exerciceId: string) => {
     return await prisma.historiqueExerciceRespiratoire.create({

@@ -17,12 +17,42 @@ export const recordSession = async (userId: string, exerciceId: string) => {
     
     await ExerciceRespiratoireModel.saveHistory(userId, exerciceId);
     return { success: true };
-  } catch (error) {
+    } catch (error) {
     return { success: false, error: "Impossible de sauvegarder l'historique." };
-  }
-};
+    }
+    };
 
-export const fetchUserStats = async (userId: string) => {
+    export const adminExerciceCreate = async (data: any) => {
+    try {
+    await ExerciceRespiratoireModel.create(data);
+    return { success: true };
+    } catch (error) {
+    console.error("Admin exercice create error:", error);
+    return { success: false, error: "Erreur lors de la création de l'exercice." };
+    }
+    };
+
+    export const adminExerciceUpdate = async (id: string, data: any) => {
+    try {
+    await ExerciceRespiratoireModel.updateById(id, data);
+    return { success: true };
+    } catch (error) {
+    console.error("Admin exercice update error:", error);
+    return { success: false, error: "Erreur lors de la mise à jour de l'exercice." };
+    }
+    };
+
+    export const adminExerciceDelete = async (id: string) => {
+    try {
+    await ExerciceRespiratoireModel.delete(id);
+    return { success: true };
+    } catch (error) {
+    console.error("Admin exercice delete error:", error);
+    return { success: false, error: "Erreur lors de la suppression de l'exercice." };
+    }
+    };
+
+    export const fetchUserStats = async (userId: string) => {
   try {
     if (!userId) return { success: false, error: "Utilisateur non identifié." };
     

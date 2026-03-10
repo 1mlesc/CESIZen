@@ -1,9 +1,10 @@
 "use server";
 
 import { auth } from "@/auth";
-import { recordSession, fetchAllExercices, fetchUserStats } from "@/controllers/exerciceController";
+import { recordSession, fetchAllExercices, fetchUserStats, adminExerciceCreate, adminExerciceUpdate, adminExerciceDelete } from "@/controllers/exerciceController";
+import { revalidatePath } from "next/cache";
 
-export async function getExerciceAction(id: string) {
+export async function getAllExercicesAction() {
   return await fetchAllExercices();
 }
 
@@ -27,4 +28,34 @@ export async function getUserStatsAction() {
   }
 
   return await fetchUserStats(session.user.id);
+}
+
+// Action ADMIN : Créer un exercice
+export async function adminCreateExerciceAction(data: any) {
+  const session = await auth();
+  if (!session || (session.user as any).role !== "ADMIN") return { success: false, error: "Non autorisé" };
+
+  const result = await adminExerciceCreate(data);
+  if (result.success) revalidatePath("/admin/exercices");
+  return result;
+}
+
+// Action ADMIN : Mettre à jour un exercice
+export async function adminUpdateExerciceAction(id: string, data: any) {
+  const session = await auth();
+  if (!session || (session.user as any).role !== "ADMIN") return { success: false, error: "Non autorisé" };
+
+  const result = await adminExerciceUpdate(id, data);
+  if (result.success) revalidatePath("/admin/exercices");
+  return result;
+}
+
+// Action ADMIN : Supprimer un exercice
+export async function adminDeleteExerciceAction(id: string) {
+  const session = await auth();
+  if (!session || (session.user as any).role !== "ADMIN") return { success: false, error: "Non autorisé" };
+
+  const result = await adminExerciceDelete(id);
+  if (result.success) revalidatePath("/admin/exercices");
+  return result;
 }
