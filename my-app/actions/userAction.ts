@@ -81,6 +81,9 @@ export async function adminCreateUserAction(data: any) {
   if (!session || (session.user as any).role !== "ADMIN") return { success: false, error: "Non autorisé" };
 
   try {
+    if (!data.password || data.password.length < 12) {
+      return { success: false, error: "Le mot de passe doit contenir au moins 12 caractères." };
+    }
     const hashedPassword = await bcrypt.hash(data.password, 10);
     
     // Déterminer le rôle

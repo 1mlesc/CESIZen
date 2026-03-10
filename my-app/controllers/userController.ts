@@ -1,6 +1,7 @@
 import { UserModel } from "@/models/User";
 import bcrypt from "bcryptjs";
 import { updateProfileSchema, updatePasswordSchema } from "@/schemas/dashboard/front-office/userSchema";
+import { prisma } from "@/lib/db";
 
 // 1. Mise à jour du profil simple
 export const getUserProfile = async (email: string) => {
@@ -83,8 +84,11 @@ export const fetchAllUsers = async () => {
 
 export const adminUserUpdate = async (id: string, data: any) => {
   try {
-    // Si un nouveau mot de passe est fourni, on le hache
+    // Si un nouveau mot de passe est fourni, on vérifie sa longueur et on le hache
     if (data.password && data.password.trim() !== "") {
+      if (data.password.length < 12) {
+        return { success: false, error: "Le mot de passe doit contenir au moins 12 caractères." };
+      }
       data.password = await bcrypt.hash(data.password, 10);
     } else {
       delete data.password;
@@ -95,7 +99,18 @@ export const adminUserUpdate = async (id: string, data: any) => {
       data.birthdate = new Date(data.birthdate);
     }
 
-    // Gestion du rôle (on attend un ID de rôle)
+    // Gestion du rôle (conversion du nom du rôle en roleId)
+    if (data.role) {
+      const roleRecord = await prisma.role.findFirst({
+        where: { role: data.role === "ADMIN" ? "ADMIN" : "USER" }
+      });
+      if (roleRecord) {
+        data.roleId = roleRecord.id;
+      }
+      delete data.role;
+    }
+
+    // Gestion du rôle par ID (si envoyé directement)
     if (data.roleId) {
       data.roleId = parseInt(data.roleId);
     }
