@@ -19,7 +19,7 @@ export const signupSchema = z.object({
     .trim(),
   password: z
     .string({error: "Le mot de passe est requis"})
-    .min(12, "")
+    .min(12, "Le mot de passe doit contenir au moins 12 caractères")
     .max(100, "Le mot de passe ne peut pas dépasser 100 caractères"),
   confirm_password: z
     .string({error: "La confirmation du mot de passe est requise"}),
@@ -36,6 +36,5 @@ export const loginSchema = z.object({
     .trim(),
   password: z
     .string()
-    .min(12, "Le mot de passe est requis")
-    .max(100, "Le mot de passe ne peut pas dépasser 100 caractères"),
+    .min(1, "Le mot de passe est requis"),
 });

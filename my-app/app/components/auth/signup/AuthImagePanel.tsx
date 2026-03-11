@@ -1,7 +1,12 @@
 import React from "react";
 import { Leaf } from "lucide-react";
 
-const AuthImagePanel = ({ title, quote }) => {
+interface AuthImagePanelProps {
+  title: string;
+  quote: string;
+}
+
+const AuthImagePanel = ({ title, quote }: AuthImagePanelProps) => {
   return (
     <div className="hidden lg:flex w-1/2 bg-linear-to-br from-green-600 to-green-800 p-12 flex-col justify-between text-white relative overflow-hidden">
       <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>

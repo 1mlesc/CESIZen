@@ -1,7 +1,13 @@
 import React from "react";
 import { User, Calendar, ArrowRight } from "lucide-react";
 
-const SignupStep1 = ({ formData, handleChange, onNext }) => {
+interface SignupStep1Props {
+  formData: any;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onNext: () => void;
+}
+
+const SignupStep1 = ({ formData, handleChange, onNext }: SignupStep1Props) => {
   return (
     <div className="space-y-5 animate-in fade-in slide-in-from-right-8 duration-500">
       {/* Prénom et Nom */}

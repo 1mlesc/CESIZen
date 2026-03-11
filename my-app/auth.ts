@@ -15,7 +15,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (validatedCredentials.success) {
             // C'est safe ici car auth.ts tourne sur Node.js
             const result = await verifyUser(validatedCredentials.data);
-            if (result.success) return result.user;
+            if (result.success) return result.user ?? null;
         }
         return null;
       },

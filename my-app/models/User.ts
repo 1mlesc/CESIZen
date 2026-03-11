@@ -58,7 +58,36 @@ export const UserModel = {
   },
   
   /**
-   * Trouver un utilisateur par son email en incluant le mot de passe
+   * Récupérer tous les utilisateurs (pour l'admin)
+   * @returns Liste des utilisateurs
+   */
+  getAll: async () => {
+    return await prisma.user.findMany({
+      include: { role: true },
+      orderBy: { createdAt: 'desc' }
+    });
+  },
+/**
+ * Modifier les informations d'un utilisateur par son ID
+ */
+updateById: async (id: string, data: any) => {
+  return await prisma.user.update({
+    where: { id },
+    data: data,
+  });
+},
+
+/**
+ * Supprimer un utilisateur
+ */
+delete: async (id: string) => {
+  return await prisma.user.delete({
+    where: { id },
+  });
+},
+
+  /**
+  * Trouver un utilisateur par son email en incluant le mot de passe
    * @param email adresse mail de l'utilisateur
    * @returns l'utilisateur trouvé ou null si non trouvé
    */
