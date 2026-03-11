@@ -6,14 +6,19 @@ services:
       dockerfile: Dockerfile
     container_name: cesizen_app_prod
     restart: always
+    env_file:
+      - ./my-app/.env
     environment:
       # On utilise le nom du service 'db' pour communiquer entre les containers
       DATABASE_URL: ${DATABASE_URL_PROD}
       AUTH_SECRET: ${AUTH_SECRET}
-      NEXTAUTH_URL: ${NEXTAUTH_URL}
+      AUTH_URL: ${AUTH_URL}
+      AUTH_TRUST_HOST: "true"
       NODE_ENV: production
     ports:
       - "3000:3000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - cesizen_prod_network
 
