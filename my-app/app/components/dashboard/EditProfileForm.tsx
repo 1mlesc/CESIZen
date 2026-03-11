@@ -3,19 +3,25 @@ import React, { useState } from "react";
 import { updateProfileAction } from "@/actions/userAction";
 import { Loader2, Save } from "lucide-react";
 
-export default function EditProfileForm({ user }) {
+export default function EditProfileForm({ user }: { user: any }) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
 
+    const target = e.target as typeof e.target & {
+      firstName: { value: string };
+      lastName: { value: string };
+      birthdate: { value: string };
+    };
+
     const formData = {
-      firstName: e.target.firstName.value,
-      lastName: e.target.lastName.value,
-      birthdate: e.target.birthdate.value,
+      firstName: target.firstName.value,
+      lastName: target.lastName.value,
+      birthdate: target.birthdate.value,
     };
 
     const res = await updateProfileAction(formData);

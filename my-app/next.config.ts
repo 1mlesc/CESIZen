@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  turbopack: {}, // Silence le message de conflit avec Webpack
   experimental: {
     serverComponentsExternalPackages: ['@prisma/client', '@prisma/engines'],
   },

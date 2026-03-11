@@ -6,17 +6,23 @@ import { Loader2, Lock } from "lucide-react";
 export default function ChangePasswordForm() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const formRef = useRef(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
 
+    const target = e.target as typeof e.target & {
+        currentPassword: { value: string };
+        newPassword: { value: string };
+        confirmPassword: { value: string };
+    };
+
     const formData = {
-      currentPassword: e.target.currentPassword.value,
-      newPassword: e.target.newPassword.value,
-      confirmPassword: e.target.confirmPassword.value,
+      currentPassword: target.currentPassword.value,
+      newPassword: target.newPassword.value,
+      confirmPassword: target.confirmPassword.value,
     };
 
     const res = await updatePasswordAction(formData);
@@ -25,7 +31,9 @@ export default function ChangePasswordForm() {
         setMessage("❌ " + res.error);
     } else {
         setMessage("✅ " + res.message);
-        formRef.current.reset(); // On vide le formulaire si succès
+        if (formRef.current) {
+          formRef.current.reset(); // On vide le formulaire si succès
+        }
     }
     setLoading(false);
   };

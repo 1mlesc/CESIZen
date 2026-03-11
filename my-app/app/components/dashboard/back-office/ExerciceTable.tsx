@@ -56,7 +56,8 @@ export default function ExerciceTable({ initialExercices }: { initialExercices: 
             type="text" 
             placeholder="Rechercher par durée ou rythme..." 
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
+
             className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all text-sm"
           />
         </div>

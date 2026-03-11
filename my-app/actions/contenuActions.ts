@@ -28,7 +28,7 @@ async function checkAdmin() {
 export async function getPublishedContenusAction() {
   try {
     const result = await fetchAllContenus();
-    if (result.success) {
+    if (result.success && result.data) {
       // Filtrer pour ne garder que les publiés pour le public
       const published = result.data.filter((c: any) => c.statut === "PUBLISHED");
       return { success: true, data: published };
@@ -43,7 +43,7 @@ export async function getPublishedContenusAction() {
 export async function getContenuByIdAction(id: number) {
   try {
     const result = await getContenuById(id);
-    if (!result.success) return result;
+    if (!result.success || !result.data) return result;
     
     const contenu = result.data;
     if (contenu.statut !== "PUBLISHED") {

@@ -3,15 +3,15 @@ import { notFound } from "next/navigation";
 import { Calendar, User, Tag, ArrowLeft, FileText } from "lucide-react";
 import Link from "next/link";
 
-export default async function ContentDetailPage({ params }: { params: { id: string } }) {
+export default async function ContentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const result = await getContenuByIdAction(parseInt(id));
 
-  if (!result.success || !result.data) {
+  if (!result.success || !("data" in result) || !result.data) {
     return notFound();
   }
 
-  const contenu = result.data;
+  const contenu = result.data as any;
 
   return (
     <div className="min-h-screen bg-gray-50 pt-32 pb-24">

@@ -5,11 +5,11 @@ import { getPublishedContenusAction } from "@/actions/contenuActions";
 
 export default async function HomePage() {
   const result = await getPublishedContenusAction();
-  const articles = result.success ? result.data : [];
+  const articles = (result.success && "data" in result && result.data) ? result.data : [];
 
   return (
     <div className="flex flex-col min-h-screen">
-      
+
       {/* 1. Section Introduction & Contexte */}
       <HeroSection />
 
