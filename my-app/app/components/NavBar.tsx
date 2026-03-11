@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Timer, LogOut, User } from "lucide-react";
@@ -13,10 +13,23 @@ interface NavBarProps {
 const NavBar = ({ session }: NavBarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const navLinks = [
     { name: "Accueil", href: "/" },
-    { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
   ];
 
@@ -86,7 +99,12 @@ const NavBar = ({ session }: NavBarProps) => {
               ))}
 
               {/* ACTION DROPDOWN EXERCICES */}
-              <div className="relative group">
+              <div 
+                className="relative group"
+                ref={dropdownRef}
+                onMouseEnter={() => setIsDropdownOpen(true)}
+                onMouseLeave={() => setIsDropdownOpen(false)}
+              >
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   className="flex items-center gap-1 relative text-gray-600 hover:text-green-600 font-medium transition-colors duration-300"
@@ -99,19 +117,22 @@ const NavBar = ({ session }: NavBarProps) => {
                 </button>
 
                 {isDropdownOpen && (
-                  <div className="absolute top-full left-0 mt-2 w-56 rounded-xl bg-white border border-gray-100 shadow-xl py-2 z-50 animate-in fade-in zoom-in duration-200">
-                    {exerciceLinks.map((ex) => (
-                      <Link
-                        key={ex.name}
-                        href={ex.href}
-                        className="block px-4 py-3 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors"
-                      >
-                        <span className="flex items-center gap-2">
-                          {ex.icon}
-                          {ex.name}
-                        </span>
-                      </Link>
-                    ))}
+                  <div className="absolute top-full left-0 pt-2 w-56 z-50 animate-in fade-in zoom-in duration-200">
+                    <div className="rounded-xl bg-white border border-gray-100 shadow-xl py-2">
+                      {exerciceLinks.map((ex) => (
+                        <Link
+                          key={ex.name}
+                          href={ex.href}
+                          onClick={() => setIsDropdownOpen(false)}
+                          className="block px-4 py-3 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors"
+                        >
+                          <span className="flex items-center gap-2">
+                            {ex.icon}
+                            {ex.name}
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>

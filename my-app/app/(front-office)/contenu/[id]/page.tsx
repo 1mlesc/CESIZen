@@ -96,10 +96,10 @@ export default async function ContentDetailPage({ params }: { params: Promise<{ 
         <div className="mt-16 text-center">
             <h3 className="text-2xl font-black text-gray-900 mb-6">Cet article vous a aidé ?</h3>
             <Link 
-                href="/dashboard" 
+                href="/" 
                 className="inline-flex items-center gap-3 px-8 py-4 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-200"
             >
-                Gérer mes exercices personnalisés
+                Retourner à l&apos;accueil
             </Link>
         </div>
       </div>
