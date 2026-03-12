@@ -15,8 +15,10 @@ services:
       - "3000:3000"
     environment:
       DATABASE_URL: postgresql://admin_cesizen:admin_cesizen@host.docker.internal:5432/dev_cesizen?schema=public
-      NEXTAUTH_URL: http://localhost:3000
       NODE_ENV: development
+      AUTH_SECRET: ${AUTH_SECRET}
+      AUTH_URL: ${AUTH_URL}
+      AUTH_TRUST_HOST: "true"
     # Ajout de la machine hôte pour postgreSQL héberger en local
     extra_hosts:
       - "host.docker.internal:host-gateway"
