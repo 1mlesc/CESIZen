@@ -11,14 +11,9 @@ const Footer = () => {
     navigation: [
       { name: "Accueil", href: "/" },
       { name: "Exercice Respiratoire", href: "/ex-respiratoire" },
-      { name: "Blog", href: "/blog" },
       { name: "Contact", href: "/contact" },
     ],
-    legal: [
-      { name: "Mentions légales", href: "/mentions-legales" },
-      { name: "Politique de confidentialité", href: "/confidentialite" },
-      { name: "CGU", href: "/cgu" },
-    ],
+    legal: [],
     social: [
       { name: "Facebook", icon: <Facebook className="w-5 h-5" />, href: "#" },
       { name: "Twitter", icon: <Twitter className="w-5 h-5" />, href: "#" },

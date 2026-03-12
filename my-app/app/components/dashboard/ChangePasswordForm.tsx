@@ -53,6 +53,28 @@ export default function ChangePasswordForm() {
         <div>
             <label className="text-sm font-medium text-gray-600">Nouveau mot de passe</label>
             <input type="password" name="newPassword" className="w-full p-2 border rounded-lg mt-1" required />
+            <div className="text-[10px] text-gray-500 mt-2 grid grid-cols-2 gap-y-1 gap-x-2 px-1">
+              <div className="flex items-center gap-1 col-span-2">
+                <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+                <span>12 caractères min.</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+                <span>Une majuscule</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+                <span>Une minuscule</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+                <span>Un chiffre</span>
+              </div>
+              <div className="flex items-center gap-1 col-span-2">
+                <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+                <span>Un caractère spécial</span>
+              </div>
+            </div>
         </div>
         <div>
             <label className="text-sm font-medium text-gray-600">Confirmer</label>

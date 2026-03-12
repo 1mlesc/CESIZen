@@ -29,10 +29,16 @@ const LoginForm = () => {
       const result = await loginAction(formData);
       if (result?.error) {
         setError(result.error);
+        setLoading(false);
       }
-    } catch (err) {
-      setError("Une erreur est survenue.");
-    } finally {
+      // Si pas d'erreur, on laisse la redirection se faire
+    } catch (err: any) {
+      // Dans Next.js, les redirections sont lancées comme des erreurs.
+      // On vérifie si c'est une redirection pour ne pas afficher de message d'erreur.
+      if (err.message === "NEXT_REDIRECT") {
+        return;
+      }
+      setError("Une erreur est survenue lors de la connexion.");
       setLoading(false);
     }
   };

@@ -84,12 +84,16 @@ export const fetchAllUsers = async () => {
 
 export const adminUserUpdate = async (id: string, data: any) => {
   try {
-    // Si un nouveau mot de passe est fourni, on vérifie sa longueur et on le hache
+    // Si un nouveau mot de passe est fourni, on vérifie sa complexité et on le hache
     if (data.password && data.password.trim() !== "") {
-      if (data.password.length < 12) {
-        return { success: false, error: "Le mot de passe doit contenir au moins 12 caractères." };
-      }
-      data.password = await bcrypt.hash(data.password, 10);
+      const password = data.password;
+      if (password.length < 12) return { success: false, error: "Le mot de passe doit contenir au moins 12 caractères." };
+      if (!/[A-Z]/.test(password)) return { success: false, error: "Le mot de passe doit contenir au moins une majuscule." };
+      if (!/[a-z]/.test(password)) return { success: false, error: "Le mot de passe doit contenir au moins une minuscule." };
+      if (!/[0-9]/.test(password)) return { success: false, error: "Le mot de passe doit contenir au moins un chiffre." };
+      if (!/[^a-zA-Z0-9]/.test(password)) return { success: false, error: "Le mot de passe doit contenir au moins un caractère spécial." };
+      
+      data.password = await bcrypt.hash(password, 10);
     } else {
       delete data.password;
     }
