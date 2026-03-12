@@ -81,10 +81,17 @@ export async function adminCreateUserAction(data: any) {
   if (!session || (session.user as any).role !== "ADMIN") return { success: false, error: "Non autorisé" };
 
   try {
-    if (!data.password || data.password.length < 12) {
+    // Validation du mot de passe
+    const password = data.password;
+    if (!password || password.length < 12) {
       return { success: false, error: "Le mot de passe doit contenir au moins 12 caractères." };
     }
-    const hashedPassword = await bcrypt.hash(data.password, 10);
+    if (!/[A-Z]/.test(password)) return { success: false, error: "Le mot de passe doit contenir au moins une majuscule." };
+    if (!/[a-z]/.test(password)) return { success: false, error: "Le mot de passe doit contenir au moins une minuscule." };
+    if (!/[0-9]/.test(password)) return { success: false, error: "Le mot de passe doit contenir au moins un chiffre." };
+    if (!/[^a-zA-Z0-9]/.test(password)) return { success: false, error: "Le mot de passe doit contenir au moins un caractère spécial." };
+
+    const hashedPassword = await bcrypt.hash(password, 10);
     
     // Déterminer le rôle
     const roleRecord = await prisma.role.findFirst({

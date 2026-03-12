@@ -55,7 +55,28 @@ const SignupStep2 = ({ formData, handleChange }: SignupStep2Props) => {
             {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
           </button>
         </div>
-        <p className="text-xs text-gray-500 mt-1">Au moins 12 caractères</p>
+        <div className="text-[10px] text-gray-500 mt-2 grid grid-cols-2 gap-y-1 gap-x-2 px-1">
+          <div className="flex items-center gap-1 col-span-2">
+            <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+            <span>12 caractères min.</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+            <span>Une majuscule</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+            <span>Une minuscule</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+            <span>Un chiffre</span>
+          </div>
+          <div className="flex items-center gap-1 col-span-2">
+            <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+            <span>Un caractère spécial</span>
+          </div>
+        </div>
       </div>
 
       {/* Confirmation */}

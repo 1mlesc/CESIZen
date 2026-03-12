@@ -11,14 +11,9 @@ const Footer = () => {
     navigation: [
       { name: "Accueil", href: "/" },
       { name: "Exercice Respiratoire", href: "/ex-respiratoire" },
-      { name: "Blog", href: "/blog" },
       { name: "Contact", href: "/contact" },
     ],
-    legal: [
-      { name: "Mentions légales", href: "/mentions-legales" },
-      { name: "Politique de confidentialité", href: "/confidentialite" },
-      { name: "CGU", href: "/cgu" },
-    ],
+    legal: [],
     social: [
       { name: "Facebook", icon: <Facebook className="w-5 h-5" />, href: "#" },
       { name: "Twitter", icon: <Twitter className="w-5 h-5" />, href: "#" },
@@ -86,25 +81,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* COLONNE 3 : LÉGAL */}
-          <div>
-            <h3 className="text-gray-900 font-bold text-lg mb-4">Informations</h3>
-            <ul className="space-y-3">
-              {footerLinks.legal.map((link) => (
-                <li key={link.name}>
-                  {/* Ici pas de flex nécessaire, le text-center du parent suffit, mais on assure le bloc */}
-                  <Link 
-                    href={link.href} 
-                    className="block text-gray-500 hover:text-green-600 text-sm transition-colors duration-200"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* COLONNE 4 : CONTACT RAPIDE */}
+          {/* COLONNE 3 : CONTACT RAPIDE */}
           <div>
             <h3 className="text-gray-900 font-bold text-lg mb-4">Nous contacter</h3>
             <p className="text-gray-500 text-sm mb-4">
