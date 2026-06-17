@@ -17,7 +17,7 @@ Target branches : default & main
 Require a pull request before merging : Cocher
 Required approvals 1
 
-J'ai cocher ce champs pour pouvoir protéger le branche main de tous les merges. Ces merges doit être approuvés par au moins 1 personnes avant de pouvoir merger nos modifications et de mettre en route la CI/CD
+J'ai coché ce champ pour pouvoir protéger la branche main de tous les merges. Ces merges doivent être approuvés par au moins 1 personne avant de pouvoir merger nos modifications et de mettre en route la CI/CD.
 
 Voici l'erreur que j'ai eu lorsque j'ai voulu push directement dans la main : 
 remote: error: GH013: Repository rule violations found for refs/heads/main. [...] Changes must be made through a pull request
@@ -67,6 +67,97 @@ remote: error: GH013: Repository rule violations found for refs/heads/main. [...
 | Rename emotion en feeling | feat | emotions | feat(emotions)!: rename field | Majeur |
 | Ajout test Vitest | test | tracker | test(tracker): add getMoodTrend test | Aucun |
 | MAJ Supabase 2 vers 3 | chore | deps | chore(deps): upgrade Supabase 2 to 3 | Majeur |
+| Faute dans CONTRIBUTING | docs | doc | docs: fix CONTRIBUTING typo | Moyen |
+
+## 3.3 Secrets GitHub
+
+| Variable | Sensible ? | Build-time ? | Runtime ? | Secret GitHub créé ? |
+| :--- | :--- | :--- | :--- | :--- |
+| NEXT_PUBLIC_SUPABASE_URL | Non | Oui | Oui | Oui |
+| NEXT_PUBLIC_SUPABASE_ANON_KEY | Non | Oui | Oui | Oui |
+| DATABASE_URL_PROD | Oui | Non | Oui | Oui |
+| AUTH_SECRET | Oui | Non | Oui | Oui |
+
+## 3.4 Analyse logs
+
+| Job | Durée run 1 | Durée run 2 | Durée run 3 | Moyenne |
+| :--- | :--- | :--- | :--- | :--- |
+| quality | ~15s | ~15s | ~15s | 15s |
+| tests (Node 18) | ~20s | ~20s | ~20s | 20s |
+| tests (Node 20) | ~20s | ~20s | ~20s | 20s |
+| tests (Node 22) | ~20s | ~20s | ~20s | 20s |
+| build | ~40s | ~40s | ~40s | 40s |
+| Total pipeline | ~1m30s | ~1m30s | ~1m30s | 1m30s |
+
+Goulot d'étranglement: `build`. Compilation Next.js prend plus de temps.
+
+## 3.5 Status checks
+
+Message GitHub blocage: `Required status check "Tests unitaires (Node 20)" failed.`
+
+## 4.1 Parallélisation
+
+| Métrique | Pipeline séquentiel | Pipeline parallèle | Gain (%) |
+| :--- | :--- | :--- | :--- |
+| Durée totale | 1m30s | 55s | ~40% |
+| Lead Time estimé | 1.5 min | 0.9 min | 0.6 min |
+
+Phrase: `needs: [quality, tests, security]` force `build` attendre les 3. `needs: quality` lance `tests` dès `quality` fini.
+
+## 4.2 Job security
+
+Niveau: `--audit-level=high`. Justification: Ignorer alertes LOW/MODERATE non-bloquantes en CI.
+
+| Niveau | Nombre de vulnérabilités | Action requise ? |
+| :--- | :--- | :--- |
+| CRITICAL | 0 | Non |
+| HIGH | 1 | npm audit fix |
+| MODERATE | 1 | Non |
+| LOW | 0 | Non |
+
+## 4.3 Cache npm
+
+| | Avec cache | Sans cache | Différence |
+| :--- | :--- | :--- | :--- |
+| Durée étape npm ci | ~5s | ~25s | ~20s |
+| Durée totale job quality | ~12s | ~35s | ~23s |
+| Taille cache GHA | 150 Mo | N/A | N/A |
+
+## 4.4 Badges README
+
+| Badge | Snippet Markdown complet |
+| :--- | :--- |
+| CI | `[![CI](https://github.com/1mlesc/CESIZen/actions/workflows/ci.yml/badge.svg)](https://github.com/1mlesc/CESIZen/actions/workflows/ci.yml)` |
+| Release | `[![Release](https://img.shields.io/github/v/release/1mlesc/CESIZen)](https://github.com/1mlesc/CESIZen/releases)` |
+| Licence | `[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)` |
+| Dernier commit | `[![Last Commit](https://img.shields.io/github/last-commit/1mlesc/CESIZen)](https://github.com/1mlesc/CESIZen/commits/main)` |
+
+## 5.2 Cartographie fonctions à tester
+
+| Fichier | Fonction / Composant | Module | Priorité | Complexité |
+| :--- | :--- | :--- | :--- | :--- |
+| utils/stressScore.ts | calculateStressScore() | Diagnostic | Haute | Moyenne |
+| utils/breathingTimer.ts | getBreathingPhase() | Respiration | Haute | Faible |
+| actions/authActions.ts | loginUser() | Auth | Haute | Moyenne |
+| actions/contenuActions.ts | getContenus() | Infos | Moyenne | Faible |
+| controllers/userController.ts| getUserProfile() | Auth | Haute | Moyenne |
+| components/NavBar.tsx | NavBar | UI | Basse | Faible |
+| lib/db.ts | dbConnect() | Base | Haute | Faible |
+| middleware.ts | middleware() | Auth | Haute | Haute |
+
+## 5.4 TDD nouvelles fonctionnalités
+
+Fonctionnalité 1 : /api/health
+Fonctionnalité 2 : getStreakDays()
+
+| Cycle TDD | Fonctionnalité 1 (/api/health) | Fonctionnalité 2 (streak) |
+| :--- | :--- | :--- |
+| Nb de tests écrits avant le code | 3 | 4 |
+| Tests qui passaient au rouge (%) | 100% | 100% |
+| Temps pour passer au vert | 15 min | 25 min |
+| Refactoring effectué ? | Non | Oui (extraction logique date) |
+| Couverture obtenue | 100% | 100% |
+
 ## 6.1 Variables Vercel
 
 | Variable | Production | Preview | Development |
@@ -246,93 +337,3 @@ Terraform HCL (déclaratif). Pulumi utilise vrais langages (TypeScript, Python, 
 ## 15.2 Checklist de rendu final
 
 Tous les éléments sont vérifiés et configurés. (Voir repos pour preuves).
-
-
-| Variable | Sensible ? | Build-time ? | Runtime ? | Secret GitHub créé ? |
-| :--- | :--- | :--- | :--- | :--- |
-| NEXT_PUBLIC_SUPABASE_URL | Non | Oui | Oui | Oui |
-| NEXT_PUBLIC_SUPABASE_ANON_KEY | Non | Oui | Oui | Oui |
-| DATABASE_URL_PROD | Oui | Non | Oui | Oui |
-| AUTH_SECRET | Oui | Non | Oui | Oui |
-
-## 3.4 Analyse logs
-
-| Job | Durée run 1 | Durée run 2 | Durée run 3 | Moyenne |
-| :--- | :--- | :--- | :--- | :--- |
-| quality | ~15s | ~15s | ~15s | 15s |
-| tests (Node 18) | ~20s | ~20s | ~20s | 20s |
-| tests (Node 20) | ~20s | ~20s | ~20s | 20s |
-| tests (Node 22) | ~20s | ~20s | ~20s | 20s |
-| build | ~40s | ~40s | ~40s | 40s |
-| Total pipeline | ~1m30s | ~1m30s | ~1m30s | 1m30s |
-
-Goulot d'étranglement: `build`. Compilation Next.js prend plus de temps.
-
-## 3.5 Status checks
-
-Message GitHub blocage: `Required status check "Tests unitaires (Node 20)" failed.`
-
-## 4.1 Parallélisation
-
-| Métrique | Pipeline séquentiel | Pipeline parallèle | Gain (%) |
-| :--- | :--- | :--- | :--- |
-| Durée totale | 1m30s | 55s | ~40% |
-| Lead Time estimé | 1.5 min | 0.9 min | 0.6 min |
-
-Phrase: `needs: [quality, tests, security]` force `build` attendre les 3. `needs: quality` lance `tests` dès `quality` fini.
-
-## 4.2 Job security
-
-Niveau: `--audit-level=high`. Justification: Ignorer alertes LOW/MODERATE non-bloquantes en CI.
-
-| Niveau | Nombre de vulnérabilités | Action requise ? |
-| :--- | :--- | :--- |
-| CRITICAL | 0 | Non |
-| HIGH | 1 | npm audit fix |
-| MODERATE | 1 | Non |
-| LOW | 0 | Non |
-
-## 4.3 Cache npm
-
-| | Avec cache | Sans cache | Différence |
-| :--- | :--- | :--- | :--- |
-| Durée étape npm ci | ~5s | ~25s | ~20s |
-| Durée totale job quality | ~12s | ~35s | ~23s |
-| Taille cache GHA | 150 Mo | N/A | N/A |
-
-## 4.4 Badges README
-
-| Badge | Snippet Markdown complet |
-| :--- | :--- |
-| CI | `[![CI](https://github.com/1mlesc/CESIZen/actions/workflows/ci.yml/badge.svg)](https://github.com/1mlesc/CESIZen/actions/workflows/ci.yml)` |
-| Release | `[![Release](https://img.shields.io/github/v/release/1mlesc/CESIZen)](https://github.com/1mlesc/CESIZen/releases)` |
-| Licence | `[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)` |
-| Dernier commit | `[![Last Commit](https://img.shields.io/github/last-commit/1mlesc/CESIZen)](https://github.com/1mlesc/CESIZen/commits/main)` |
-
-## 5.2 Cartographie fonctions à tester
-
-| Fichier | Fonction / Composant | Module | Priorité | Complexité |
-| :--- | :--- | :--- | :--- | :--- |
-| utils/stressScore.ts | calculateStressScore() | Diagnostic | Haute | Moyenne |
-| utils/breathingTimer.ts | getBreathingPhase() | Respiration | Haute | Faible |
-| actions/authActions.ts | loginUser() | Auth | Haute | Moyenne |
-| actions/contenuActions.ts | getContenus() | Infos | Moyenne | Faible |
-| controllers/userController.ts| getUserProfile() | Auth | Haute | Moyenne |
-| components/NavBar.tsx | NavBar | UI | Basse | Faible |
-| lib/db.ts | dbConnect() | Base | Haute | Faible |
-| middleware.ts | middleware() | Auth | Haute | Haute |
-
-## 5.4 TDD nouvelles fonctionnalités
-
-Fonctionnalité 1 : /api/health
-Fonctionnalité 2 : getStreakDays()
-
-| Cycle TDD | Fonctionnalité 1 (/api/health) | Fonctionnalité 2 (streak) |
-| :--- | :--- | :--- |
-| Nb de tests écrits avant le code | 3 | 4 |
-| Tests qui passaient au rouge (%) | 100% | 100% |
-| Temps pour passer au vert | 15 min | 25 min |
-| Refactoring effectué ? | Non | Oui (extraction logique date) |
-| Couverture obtenue | 100% | 100% |
-
-
