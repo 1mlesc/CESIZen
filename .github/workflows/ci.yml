@@ -43,9 +43,19 @@ jobs:
           path: coverage/
           retention-days: 7
 
+  security:
+    name: Audit Sécurité
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20', cache: 'npm' }
+      - run: npm ci
+      - run: npm audit --audit-level=high
+
   build:
     runs-on: ubuntu-latest
-    needs: [quality, tests]
+    needs: [quality, tests, security]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
