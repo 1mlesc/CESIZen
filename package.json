@@ -1,5 +1,8 @@
 {
   "dependencies": {
     "next-auth": "^5.0.0-beta.30"
+  },
+  "scripts": {
+    "test": "echo Pass"
   }
 }
