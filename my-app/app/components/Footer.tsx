@@ -101,7 +101,7 @@ const Footer = () => {
         {/* BARRE DE COPYRIGHT */}
         <div className="border-t border-gray-100 pt-8 mt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
           <p className="text-gray-400 text-sm">
-            &copy; {currentYear} CESI Zen. Tous droits réservés.
+            &copy; {currentYear} CESI Zen. Tous droits réservés blablablablalb.
           </p>
           
           <div className="flex items-center gap-1 text-gray-400 text-sm">
