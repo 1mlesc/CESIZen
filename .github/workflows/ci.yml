@@ -55,7 +55,7 @@ jobs:
 
   docker:
     name: Build & Push Docker
-    needs: build
+    needs: tests
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
@@ -86,7 +86,7 @@ jobs:
 
   deploy-preview:
     name: Deploy Preview
-    needs: build
+    needs: tests
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
@@ -112,7 +112,7 @@ jobs:
 
   release:
     name: Semantic Release
-    needs: deploy-production
+    needs: docker
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
