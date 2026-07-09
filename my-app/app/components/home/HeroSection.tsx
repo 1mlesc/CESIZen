@@ -27,7 +27,7 @@ const HeroSection = () => {
           <div className="mt-8 flex justify-center gap-4">
             <Link
               href="#exercices"
-              className="px-8 py-3 rounded-full bg-red-600 text-white font-semibold shadow-lg hover:bg-green-700 hover:-translate-y-1 transition-all duration-200"
+              className="px-8 py-3 rounded-full bg-green-600 text-white font-semibold shadow-lg hover:bg-green-700 hover:-translate-y-1 transition-all duration-200"
             >
               Commencer maintenant
             </Link>
