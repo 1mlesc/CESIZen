@@ -1,30 +1,33 @@
+version: '3.8'
 services:
-  # Application Next.js (Production)
   app:
     build:
-      context: ./my-app
-      dockerfile: Dockerfile
-    container_name: cesizen_app_prod
-    restart: always
-    env_file:
-      - ./my-app/.env
-    environment:
-      # On utilise le nom du service 'db' pour communiquer entre les containers
-      DATABASE_URL: ${DATABASE_URL_PROD}
-      AUTH_SECRET: ${AUTH_SECRET}
-      AUTH_URL: ${AUTH_URL}
-      AUTH_TRUST_HOST: "true"
-      NODE_ENV: production
+      context: .
+      target: builder
     ports:
-      - "3000:3000"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    networks:
-      - cesizen_prod_network
-
-networks:
-  cesizen_prod_network:
-    driver: bridge
+      - '3000:3000'
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      - DATABASE_URL=${DATABASE_URL}
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    command: npm run dev
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: admin_cesizen
+      POSTGRES_PASSWORD: admin_cesizen
+      POSTGRES_DB: dev_cesizen
+    ports:
+      - '5432:5432'
+    volumes:
+      - db_data:/var/lib/postgresql/data
 
 volumes:
-  postgres_prod_data:
+  db_data:
